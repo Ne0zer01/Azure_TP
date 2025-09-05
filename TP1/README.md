@@ -142,3 +142,18 @@ djamil@vmTP1:~$ systemctl is-active cloud-init.service
 active
 ```
 # 🌞 Utilisez Terraform pour créer une VM dans Azure
+```powershell
+azurerm_public_ip.main: Creating...
+azurerm_public_ip.main: Creation complete after 4s [id=/subscriptions/344fb974-6d09-41dc-b4d0-77bf422b1b8e/resourceGroups/Azure_Test/providers/Microsoft.Network/publicIPAddresses/vm-ip]
+azurerm_network_interface.main: Creating...
+azurerm_network_interface.main: Still creating... [00m10s elapsed]
+azurerm_network_interface.main: Creation complete after 12s [id=/subscriptions/344fb974-6d09-41dc-b4d0-77bf422b1b8e/resourceGroups/Azure_Test/providers/Microsoft.Network/networkInterfaces/vm-nic]
+azurerm_linux_virtual_machine.main: Creating...
+azurerm_linux_virtual_machine.main: Still creating... [00m10s elapsed]
+azurerm_linux_virtual_machine.main: Still creating... [00m20s elapsed]
+azurerm_linux_virtual_machine.main: Still creating... [00m30s elapsed]
+azurerm_linux_virtual_machine.main: Still creating... [00m40s elapsed]
+azurerm_linux_virtual_machine.main: Creation complete after 49s [id=/subscriptions/344fb974-6d09-41dc-b4d0-77bf422b1b8e/resourceGroups/Azure_Test/providers/Microsoft.Compute/virtualMachines/super-vm]
+
+Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+```
