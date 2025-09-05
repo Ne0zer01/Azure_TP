@@ -36,3 +36,58 @@ ssh-add -l
 (pour verifier que la clé a bien été ajouter)
 
 # 🌞 Connectez-vous en SSH à la VM pour preuve
+```powershell
+ssh  4.233.89.150
+The authenticity of host '4.233.89.150 (4.233.89.150)' can't be established.
+ED25519 key fingerprint is SHA256:9ObLEl6INH0fuiduO/lCiSLVk8Hoh0HSuJQFtsuzzHE.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '4.233.89.150' (ED25519) to the list of known hosts.
+djamil@4.233.89.150: Permission denied (publickey).
+ls .\.ssh\
+
+
+    Directory: C:\Users\DKhen\.ssh
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        05/09/2025     12:23             95 known_hosts
+
+ssh-add.exe "C:\Users\DKhen\OneDrive\Desktop\TP_Azure\ssh\cloud_tp1"
+Enter passphrase for C:\Users\DKhen\OneDrive\Desktop\TP_Azure\ssh\cloud_tp1:
+Identity added: C:\Users\DKhen\OneDrive\Desktop\TP_Azure\ssh\cloud_tp1 (cloud_tp1)
+PS C:\Users\DKhen> ssh  azureuser@4.233.89.150
+Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.11.0-1018-azure x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Fri Sep  5 10:26:16 UTC 2025
+
+  System load:  0.11              Processes:             125
+  Usage of /:   5.6% of 28.02GB   Users logged in:       0
+  Memory usage: 3%                IPv4 address for eth0: 10.0.0.4
+  Swap usage:   0%
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+0 updates can be applied immediately.
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+The list of available updates is more than a week old.
+To check for new updates run: sudo apt update
+
+Last login: Fri Sep  5 10:26:19 2025 from 209.206.8.251
+To run a command as administrator (user "root"), use "sudo <command>".
+See "man sudo_root" for details.
+
+azureuser@TP1:~$
+logout
+Connection to 4.233.89.150 closed.
+```
