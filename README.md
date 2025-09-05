@@ -44,8 +44,9 @@ This key is not known by any other names.
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
 Warning: Permanently added '4.233.89.150' (ED25519) to the list of known hosts.
 djamil@4.233.89.150: Permission denied (publickey).
+```
 ```powershell
-ls .\.ssh\
+PS C:\Users\DKhen> ls .\.ssh\
 
 
     Directory: C:\Users\DKhen\.ssh
