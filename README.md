@@ -14,7 +14,6 @@ La commande utilisée pour générer la paire de clés : ssh-keygen -t ed25519 -
 ```powershell
 Remove-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
 ```
-
 ```powershell
 Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
 ```
@@ -22,17 +21,14 @@ Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
 Get-Service -Name ssh-agent | Select-Object Name, Status, StartType
 ```
 (a permis de voir le status et le StartType de l'agent SSH de Windows) ==> Status = stopped, StartType = Disabled
-
 ```powershell
 Set-Service -Name ssh-agent -StartupType Automatic
 ```
 (a parmis de changer le StartType de Disabled vers Automatic)
-
 ```powershell
 Start-Service ssh-agent
 ```
 (a permis de lancer l'agent SSH)
-
 ```powershell
 ssh-add C:/Users/DKhen/OneDrive/Desktop/TP_Azure/ssh/cloud_tp1
 ```
