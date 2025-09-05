@@ -37,7 +37,7 @@ ssh-add -l
 
 # 🌞 Connectez-vous en SSH à la VM pour preuve
 ```powershell
-ssh  4.233.89.150
+PS C:\Users\DKhen> ssh  4.233.89.150
 The authenticity of host '4.233.89.150 (4.233.89.150)' can't be established.
 ED25519 key fingerprint is SHA256:9ObLEl6INH0fuiduO/lCiSLVk8Hoh0HSuJQFtsuzzHE.
 This key is not known by any other names.
