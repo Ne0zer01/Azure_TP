@@ -96,3 +96,14 @@ azureuser@TP1:~$
 logout
 Connection to 4.233.89.150 closed.
 ```
+# 🌞 Créez une VM depuis le Azure CLI
+```powershell
+az vm create `
+  --resource-group Azure_TP `
+  --name TP1.2 `
+  --image Ubuntuw2404 `
+  --admin-username djamil `
+  --ssh-key-values C:\Users\Djamil\.ssh\id_rsa.pub `
+  --location francecentral `
+  --size Standard_D2s_v5
+```
