@@ -7,3 +7,28 @@ Source qui explique pourquoi on devrait utiliser Ed225519 : https://nikk.is-a.de
 
 🌞 Générer une paire de clés pour ce TP :
 
+La commande utilisée pour générer la paire de clés : ssh-keygen -t ed25519 -f C:/Users/DKhen/OneDrive/Desktop/TP_Azure/ssh -C "cloud_tp1"
+
+🌞 Configurer un agent SSH sur votre poste (Les etapes):
+
+# Supprimer OpenSSH client
+Remove-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+
+# Réinstaller
+Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+(Aprés avoir redémarrer le pc)
+
+Get-Service -Name ssh-agent | Select-Object Name, Status, StartType
+(a permis de voir le status et le StartType de l'agent SSH de Windows) ==> Status = stopped, StartType = Disabled
+
+Set-Service -Name ssh-agent -StartupType Automatic
+(a parmis de changer le StartType de Disabled vers Automatic)
+
+Start-Service ssh-agent
+(a permis de lancer l'agent SSH)
+
+ssh-add C:/Users/DKhen/OneDrive/Desktop/TP_Azure/ssh/cloud_tp1
+(pour ajouter la clé dans l'agent SSH)
+
+ssh-add -l
+(pour verifier que la clé a bien été ajouter)
