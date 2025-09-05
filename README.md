@@ -141,3 +141,4 @@ active
 djamil@vmTP1:~$ systemctl is-active cloud-init.service
 active
 ```
+# 🌞 Utilisez Terraform pour créer une VM dans Azure
