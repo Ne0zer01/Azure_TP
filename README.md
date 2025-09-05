@@ -107,6 +107,7 @@ az vm create `
   --location francecentral `
   --size Standard_D2s_v5
 ```
+# 🌞 Assurez-vous que vous pouvez vous connecter à la VM en SSH sur son IP publique
 IP publique : 4.212.91.196
 ```powershell
 PS C:\Users\DKhen> ssh djamil@4.212.91.196
