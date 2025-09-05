@@ -107,3 +107,7 @@ az vm create `
   --location francecentral `
   --size Standard_D2s_v5
 ```
+IP publique : 4.212.91.196
+```powershell
+PS C:\Users\DKhen> ssh djamil@4.212.91.196 Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.11.0-1018-azure x86_64) * Documentation: https://help.ubuntu.com * Management: https://landscape.canonical.com * Support: https://ubuntu.com/pro System information as of Fri Sep 5 12:04:00 UTC 2025 System load: 0.05 Processes: 112 Usage of /: 5.7% of 28.02GB Users logged in: 0 Memory usage: 29% IPv4 address for eth0: 10.0.0.5 Swap usage: 0% Expanded Security Maintenance for Applications is not enabled. 0 updates can be applied immediately. Enable ESM Apps to receive additional future security updates. See https://ubuntu.com/esm or run: sudo pro status The list of available updates is more than a week old. To check for new updates run: sudo apt update Last login: Fri Sep 5 12:02:41 2025 from 209.206.8.251 To run a command as administrator (user "root"), use "sudo <command>". See "man sudo_root" for details. djamil@vmTP1:~$
+```
