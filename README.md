@@ -33,8 +33,11 @@ Start-Service ssh-agent
 ```
 (a permis de lancer l'agent SSH)
 
+```powershell
 ssh-add C:/Users/DKhen/OneDrive/Desktop/TP_Azure/ssh/cloud_tp1
+```
 (pour ajouter la clé dans l'agent SSH)
-
+```powershell
 ssh-add -l
+```
 (pour verifier que la clé a bien été ajouter)
