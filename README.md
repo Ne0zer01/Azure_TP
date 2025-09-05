@@ -136,3 +136,8 @@ djamil@vmTP1:~$
 djamil@vmTP1:~$ systemctl is-active walinuxagent.service
 active
 ```
+# 🌞 Une fois connecté, prouvez la présence du service cloud-init.service
+```powershell
+djamil@vmTP1:~$ systemctl is-active cloud-init.service
+active
+```
