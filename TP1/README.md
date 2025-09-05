@@ -157,3 +157,12 @@ azurerm_linux_virtual_machine.main: Creation complete after 49s [id=/subscriptio
 
 Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 ```
+# 🌞 Prouvez avec une connexion SSH sur l'IP publique que la VM est up
+```powershell
+PS C:\Users\DKhen\OneDrive\Desktop\TP_Azure\Terraform> ssh djamil@4.211.133.212
+The authenticity of host '4.211.133.212 (4.211.133.212)' can't be established.
+ED25519 key fingerprint is SHA256:x6W54Jpew3guuRBBegZLykkkvA33Snoz3mDZ/TiZJUU.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '4.211.133.212' (ED25519) to the list of known hosts.
+```
