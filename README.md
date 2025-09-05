@@ -131,3 +131,8 @@ To run a command as administrator (user "root"), use "sudo <command>".
 See "man sudo_root" for details.
 djamil@vmTP1:~$
 ```
+# 🌞 Une fois connecté, prouvez la présence du service walinuxagent.service
+```powershell
+djamil@vmTP1:~$ systemctl is-active walinuxagent.service
+active
+```
