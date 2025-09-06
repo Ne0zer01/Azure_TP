@@ -30,7 +30,7 @@ resource "azurerm_network_security_group" "main" {
     source_port_range          = "*"             # n'importe quel port source
     destination_port_range     = "22"            # autorise seulement le port SSH (22)
     #source_address_prefixes    = [chomp(data.http.my_ip.response_body)] # ton IP publique
-    source_address_prefix = [
+    source_address_prefixes = [
         "46.193.69.134"     #IP chambre
     ]
     destination_address_prefix = "*"             # la VM (peu importe son IP interne)
