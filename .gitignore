@@ -1,3 +1,7 @@
 terraform.tfvars
 # C:\Users\DKhen\Azure_TP\TP2\TerraForm\.terraform
 # C:\Users\DKhen\Azure_TP\TP2\TerraForm\.terraform.lock.hcl
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
