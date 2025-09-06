@@ -16,11 +16,18 @@ Le fichier **_network.tf_** a été ajouter.
     ```  
 
     **_Resultat (Id du NSG)_**
+
     ```powershell
     "/subscriptions/344fb974-6d09-41dc-b4d0-77bf422b1b8e/resourceGroups/Azure_Test/providers/Microsoft.Network/networkInterfaces/vm-nic"
     ```
+    ```powershell
+        az network nic show `
+    --ids "/subscriptions/344fb974-6d09-41dc-b4d0-77bf422b1b8e/resourceGroups/Azure_Test/providers/Microsoft.Network/networkInterfaces/vm-nic" `
+    --query "networkSecurityGroup"
+    ```
 
     **_Resultat (ID du NSG relier a ma VM)_**
+
     ```powershell
     {
     "id": "/subscriptions/344fb974-6d09-41dc-b4d0-77bf422b1b8e/resourceGroups/Azure_Test/providers/Microsoft.Network/networkSecurityGroups/vm-nsg",
