@@ -5,9 +5,9 @@
 # de donner ton IP publique actuelle.
 # Cette IP sera utilisée dans la règle de sécurité (NSG)
 # pour n'autoriser QUE toi à te connecter en SSH.
-data "http" "my_ip" {
-  url = "https://ifconfig.me"
-}
+#data "http" "my_ip" {
+#  url = "https://ifconfig.me"
+#}
 
 # ===============================
 # Network Security Group (NSG)
