@@ -37,6 +37,23 @@ resource "azurerm_network_security_group" "main" {
   }
 }
 
+# =========================
+# Règle SSH (port 2222)
+# =========================
+resource "azurerm_network_security_rule" "ssh_2222" {
+  name                        = "Allow-SSH-2222"
+  priority                    = 110
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "2222"
+  source_address_prefixes     = ["46.193.69.134"] # Remplace par ton IP
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.main.name
+  network_security_group_name = azurerm_network_security_group.main.name
+}
+
 # ===============================
 # Association NSG ↔ NIC
 # ===============================
