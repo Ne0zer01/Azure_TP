@@ -123,3 +123,6 @@ public_ip_dns = "monvmtest.francecentral.cloudapp.azure.com"
 ```powershell
 ssh djamil@monvmtest.francecentral.cloudapp.azure.com
 ```
+
+# III. Blob storage
+
