@@ -69,6 +69,7 @@ resource "azurerm_network_interface" "main" {
 # sku = "Standard" → meilleure disponibilité
 resource "azurerm_public_ip" "main" {
   name                = "vm-ip"
+  domain_name_label   = "monvmtest"  # <-- le nom du DNS
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   allocation_method   = "Static"

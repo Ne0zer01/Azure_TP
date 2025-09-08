@@ -1,7 +1,9 @@
-# 🌞 Ajouter un NSG à votre déploiement Terraform
+# I. Network Security Group
+
+## 🌞 Ajouter un NSG à votre déploiement Terraform
 Le fichier **_network.tf_** a été ajouter.
 
-# 🌞 Prouver que ça fonctionne, rendu attendu :
+## 🌞 Prouver que ça fonctionne, rendu attendu :
 1) la sortie du **_terraform apply_** :
     ```powershell
     Apply complete! Resources: 8 added, 0 changed, 0 destroyed.
@@ -89,4 +91,6 @@ Le fichier **_network.tf_** a été ajouter.
         ```powershell
         ssh: connect to host <IP_publique> port 2222: Connection timed out
         ```
-        (Le timeout indique que le paquet n’atteint pas la VM. Si le problème venait de SSH côté VM, tu aurais plutôt **Connection refused**.)
+        (Le timeout indique que le paquet n’atteint pas la VM. Si le problème venait de SSH côté VM, tu aurais plutôt **Connection refused**.)  
+
+# II. Un ptit nom DNS
