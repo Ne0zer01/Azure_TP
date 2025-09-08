@@ -94,3 +94,32 @@ Le fichier **_network.tf_** a été ajouter.
         (Le timeout indique que le paquet n’atteint pas la VM. Si le problème venait de SSH côté VM, tu aurais plutôt **Connection refused**.)  
 
 # II. Un ptit nom DNS
+
+## 🌞 Donner un nom DNS à votre VM
+
+```terraform
+domain_name_label   = "monvmtest"
+```
+
+## 🌞 Un ptit output nan ?
+
+Le fichier outputs.tf a été crée.
+
+## 🌞 Proofs ! Donnez moi :
+
+**la sortie du terraform apply (ce qu'affiche votre outputs.tf) :**
+
+```powershell
+Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
+
+Outputs:
+
+public_ip_address = "20.188.40.55"
+public_ip_dns = "monvmtest.francecentral.cloudapp.azure.com"
+```
+
+**une commande ssh fonctionnelle vers le nom de domaine (pas l'IP) :**
+
+```powershell
+ssh djamil@monvmtest.francecentral.cloudapp.azure.com
+```
