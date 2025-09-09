@@ -113,4 +113,9 @@ resource "azurerm_linux_virtual_machine" "main" {
     sku       = "20_04-lts"
     version   = "latest"
   }
+  
+  # J'ai rajouter identity pour que le blob storage marche
+  identity {
+  type = "SystemAssigned"
+  }
 }

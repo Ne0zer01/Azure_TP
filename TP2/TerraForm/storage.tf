@@ -20,7 +20,7 @@ data "azurerm_virtual_machine" "main" {
 }
 
 resource "azurerm_role_assignment" "vm_blob_access" {
-  principal_id = data.azurerm_virtual_machine.main.identity[0].principal_id
+  principal_id         = data.azurerm_virtual_machine.main.identity[0].principal_id
   role_definition_name = "Storage Blob Data Contributor"
   scope                = azurerm_storage_account.main.id
 
