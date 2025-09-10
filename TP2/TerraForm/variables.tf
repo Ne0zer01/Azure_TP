@@ -35,3 +35,8 @@ variable "storage_container_name" {
   type        = string
   description = "Nom du conteneur blob"
 }
+
+variable "alert_email_address" {
+  description = "Adresse email qui recevra les alertes de monitoring"
+  type        = string
+}
