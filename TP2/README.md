@@ -211,3 +211,50 @@ Tous les systèmes Linux/Windows savent que les IPs 169.254.x.x sont accessibles
 
 Donc toute requête vers 169.254.169.254 **_reste locale à la VM_**, elle ne sort pas vers le réseau public.  
 Azure installe un petit service sur l’hôte de la VM qui **_redirige automatiquement_** ces requêtes vers le IMDS pour fournir les métadonnées de la VM (ex : Managed Identity, hostname, etc.).
+
+# IV. Monitoring
+
+## 🌞 Une commande az qui permet de lister les alertes actuellement configurées :
+
+**_La commande_** :
+
+```powershell
+ az monitor metrics alert list --resource-group Azure_Test --output table
+ ```
+
+ **_Le resultat_** :
+
+ ```powershell
+ AutoMitigate    Description                        Enabled    EvaluationFrequency    Location    Name                   ResourceGroup    Severity    TargetResourceRegion    TargetResourceType    WindowSize
+--------------  ---------------------------------  ---------  ---------------------  ----------  ---------------------  ---------------  ----------  ----------------------  --------------------  ------------
+True            Alert when CPU usage exceeds 70%   True       PT1M                   global      cpu-alert-super-vm     Azure_Test       2                                                         PT5M
+True            Alert when available RAM < 512 MB  True       PT1M                   global      memory-alert-super-vm  Azure_Test       2                                                         PT5M
+```
+
+## 🌞 Stress de la machine :
+
+1. Installation du paquet **_stress-ng_** :
+
+    ```bash
+    sudo apt install stress-ng -y
+    ```
+2. utilisez la commande **_stress-ng_** pour :  
+    1) **_stress le CPU_** :
+
+        ```bash
+        stress-ng --cpu 2 --timeout 10m
+        ```
+
+    2) **_stress la RAM_** :
+
+        ```bash
+        stress-ng --vm 1 --vm-bytes 600M --vm-keep --timeout 10m
+        ```
+
+## 🌞 Vérifier que des alertes ont été fired :
+
+**_La commande az qui montre que les alertes ont été levées_** :
+
+```powershell
+az monitor activity-log list --resource-group Azure_Test --max-events 50 --output table
+```
