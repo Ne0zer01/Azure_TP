@@ -258,3 +258,65 @@ True            Alert when available RAM < 512 MB  True       PT1M              
 ```powershell
 az monitor activity-log list --resource-group Azure_Test --max-events 50 --output table
 ```
+
+
+# V. Azure Vault
+
+## 🌞 Avec une commande **_az_**, afficher le secret :
+La commande :
+
+```powershell
+az keyvault secret show --name "<Le nom de ton secret ici>" --vault-name "<Le nom de ta Azure Key Vault ici>"
+```
+
+Le resultat :
+
+```powershell
+{
+  "attributes": {
+    "created": "2025-09-13T15:49:42+00:00",
+    "enabled": true,
+    "expires": null,
+    "notBefore": null,
+    "recoverableDays": 7,
+    "recoveryLevel": "CustomizedRecoverable+Purgeable",
+    "updated": "2025-09-13T15:49:42+00:00"
+  },
+  "contentType": "",
+  "id": "https://vaulttestdjamil.vault.azure.net/secrets/vaultpassworddjamil/ebbcda4d96d84bdda69c29236115d361",
+  "kid": null,
+  "managed": null,
+  "name": "vaultpassworddjamil",
+  "tags": {},
+  "value": "4MyVBQs7IbRhXOn6"
+}
+```
+
+## 🌞 Depuis la VM, afficher le secret :
+La commande :
+
+```bash
+VAULT_NAME="vaulttestdjamil"      # nom de ta Key Vault
+SECRET_NAME="vaultpassworddjamil"     # nom de ton secret
+
+# Obtenir un jeton d'accès Azure (via l'identité managée de la VM)
+ACCESS_TOKEN=$(curl -s \
+  -H "Metadata:true" \
+  --noproxy "*" \
+  "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://vault.azure.net" \
+  | jq -r '.access_token')
+
+# Récupérer le secret dans la Key Vault
+curl -s \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  "https://${VAULT_NAME}.vault.azure.net/secrets/${SECRET_NAME}?api-version=7.4" \
+  | jq -r '.value'
+```
+
+Le resultat :
+
+```bash
+4MyVBQs7IbRhXOn6
+```
+
+(meme resultat avec la commande az)
