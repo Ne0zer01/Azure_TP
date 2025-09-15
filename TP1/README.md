@@ -36,6 +36,7 @@ ssh-add -l
 (pour verifier que la clé a bien été ajouter)
 
 # 🌞 Connectez-vous en SSH à la VM pour preuve
+
 ```powershell
 PS C:\Users\DKhen> ssh  4.233.89.150
 The authenticity of host '4.233.89.150 (4.233.89.150)' can''t be established.
@@ -45,6 +46,7 @@ Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
 Warning: Permanently added '4.233.89.150' (ED25519) to the list of known hosts.
 djamil@4.233.89.150: Permission denied (publickey).
 ```
+
 ```powershell
 PS C:\Users\DKhen> ls .\.ssh\
 
@@ -56,11 +58,13 @@ Mode                 LastWriteTime         Length Name
 ----                 -------------         ------ ----
 -a----        05/09/2025     12:23             95 known_hosts
 ```
+
 ```powershell
 PS C:\Users\DKhen> ssh-add.exe "C:\Users\DKhen\OneDrive\Desktop\TP_Azure\ssh\cloud_tp1"
 Enter passphrase for C:\Users\DKhen\OneDrive\Desktop\TP_Azure\ssh\cloud_tp1:
 Identity added: C:\Users\DKhen\OneDrive\Desktop\TP_Azure\ssh\cloud_tp1 (cloud_tp1)
 ```
+
 ```powershell
 PS C:\Users\DKhen> ssh  azureuser@4.233.89.150
 Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.11.0-1018-azure x86_64)
