@@ -87,6 +87,8 @@ sudo hostnamectl set-hostname kvm2.one       # VM3
 
 ## II.1. Setup Frontend :
 
+## A. Database :
+
 ### 🌞 Installer un serveur MySQL :
 
 **_Installation d'un serveur spécifique de MySQL, demander par OpenNebula :_**
@@ -194,9 +196,253 @@ sudo grep 'temporary password' /var/log/mysqld.log
 ```bash
 sudo mysql -u root -p
 ```
+**Les commandes MySQL effectuer :**
 
+```mysql
 ALTER USER 'root'@'localhost' IDENTIFIED BY 'hey_boi_define_a_strong_password';
 CREATE USER 'oneadmin' IDENTIFIED BY 'also_here_define_another_strong_password';
 CREATE DATABASE opennebula;
 GRANT ALL PRIVILEGES ON opennebula.* TO 'oneadmin';
 SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED;
+```
+
+## B. OpenNebula :
+
+### 🌞 Ajouter les dépôts Open Nebula :
+
+```bash
+sudo nano /etc/yum.repos.d/opennebula.repo
+```
+
+**Ajout de ceci dans le dépot opennebula.repo :**
+
+```ini
+[opennebula]
+name=OpenNebula Community Edition
+baseurl=https://downloads.opennebula.io/repo/6.10/RedHat/$releasever/$basearch
+enabled=1
+gpgkey=https://downloads.opennebula.io/repo/repo2.key
+gpgcheck=1
+repo_gpgcheck=1
+```
+
+**Vérification que le dépôt est bien activé :**
+
+```bash
+sudo dnf repolist | grep opennebula
+```
+
+Résultat ->
+
+```bash
+opennebula         OpenNebula Community Edition
+```
+
+**Téléchargement des métadonnées pour accélerer les installations :**
+
+```bash
+sudo dnf makecache -y
+```
+
+### 🌞 Installer OpenNebula :
+
+```bash
+sudo dnf install -y opennebula opennebula-sunstone opennebula-fireedge
+```
+
+**Vérification de l'installation :**
+
+```bash
+rpm -qa | grep opennebula
+```
+
+Résultat -> 
+
+```bash
+opennebula-common-onecfg-6.10.0.1-1.el9.noarch
+opennebula-common-6.10.0.1-1.el9.noarch
+opennebula-rubygems-6.10.0.1-1.el9.x86_64
+opennebula-libs-6.10.0.1-1.el9.noarch
+opennebula-provision-data-6.10.0.1-1.el9.noarch
+opennebula-guacd-6.10.0.1-1.2.0+1.el9.x86_64
+opennebula-tools-6.10.0.1-1.el9.noarch
+opennebula-6.10.0.1-1.el9.x86_64
+opennebula-sunstone-6.10.0.1-1.el9.noarch
+opennebula-fireedge-6.10.0.1-1.el9.x86_64
+```
+
+### 🌞 Configuration OpenNebula :
+
+```bash
+sudo nano /etc/one/oned.conf
+```
+
+**Remplacement des paramètres de DB par :**
+
+```
+DB = [ BACKEND = "mysql",
+       SERVER  = "localhost",
+       PORT    = 0,
+       USER    = "oneadmin",
+       PASSWD  = "also_here_define_another_strong_password",
+       DB_NAME = "opennebula",
+       CONNECTIONS = 25,
+       COMPARE_BINARY = "no" ]
+```
+
+### 🌞 Créer un user pour se log sur la WebUI OpenNebula :
+
+**se log en tant q'utilisateur oneadmin :**
+
+```bash
+sudo su - oneadmin
+```
+
+**Changement du mot de passe de one_auth :**
+
+```bash
+nano /var/lib/one/.one/one_auth
+```
+
+### 🌞 Démarrer les services OpenNebula :
+
+**Démarrage des services** *_opennebula_*, *_opennebula-sunstone_* :
+
+```bash
+sudo systemctl start opennebula
+sudo systemctl start opennebula-sunstone
+```
+
+**Activer les services au démarrage :**
+
+```bash
+sudo systemctl enable opennebula
+sudo systemctl enable opennebula-sunstone
+```
+
+## C. Conf système
+
+### 🌞 Ouverture firewall :
+
+**Ajouter les ports de façon permanente :**
+
+```bash
+  sudo firewall-cmd --permanent --add-port=9869/tcp   # WebUI Sunstone
+  sudo firewall-cmd --permanent --add-port=22/tcp     # SSH
+  sudo firewall-cmd --permanent --add-port=2633/tcp   # oned / XML-RPC
+  sudo firewall-cmd --permanent --add-port=4124/tcp   # Monitoring TCP
+  sudo firewall-cmd --permanent --add-port=4124/udp   # Monitoring UDP
+  sudo firewall-cmd --permanent --add-port=29876/tcp  # NoVNC proxy
+```
+
+**Recharger firewalld pour appliquer les changements :**
+
+```bash
+  sudo firewall-cmd --reload
+```
+
+**Vérifier que les ports sont ouverts :**
+
+```bash
+  sudo firewall-cmd --list-ports
+```
+
+## II.2. Noeuds KVM :
+
+### 🌞 Ajout des dépôts supplémentaires :
+
+**Ajout es dépôts de OpenNebula :**
+
+```bash
+  sudo nano /etc/yum.repos.d/opennebula.repo
+```
+
+**Ajout des dépôts du serveur MySQL communautaire :**
+
+```bash
+  wget https://dev.mysql.com/get/mysql80-community-release-el9-5.noarch.rpm
+  sudo rpm -ivh mysql80-community-release-el9-5.noarch.rpm
+ ```
+
+ **Ajout des dépôts EPEL :**
+
+ ```bash
+  sudo dnf install -y epel-release
+ ```
+
+ ### 🌞 Installer les libs MySQL :
+
+ ```bash
+  dnf install -y mysql-community-server
+ ```
+
+ ### 🌞 Installer KVM :
+
+ ```bash
+  sudo dnf install -y opennebula-node-kvm
+ ```
+
+ ### 🌞 Dépendances additionnelles :
+
+ ```bash
+  sudo dnf install -y genisoimage
+ ```
+
+ ### 🌞 Démarrer le service *_libvirtd_* :
+
+ ```bash
+  sudo systemctl start libvirtd
+  sudo systemctl enable libvirtd
+ ```
+
+ ### 🌞 Ouverture firewall :
+
+ ```bash
+  sudo firewall-cmd --permanent --add-port=22/tcp
+  sudo firewall-cmd --permanent --add-port=8472/udp
+```
+
+### 🌞 Handle SSH :
+
+```bash
+  [djamil@frontend ~]$ sudo -su oneadmin
+  [sudo] password for djamil:
+  [oneadmin@frontend djamil]$ ssh djamil@10.3.1.11
+  Warning: Permanently added '10.3.1.11' (ED25519) to the list of known hosts.
+  djamil@10.3.1.11''s password:
+  Last login: Tue Sep 16 12:16:54 2025 from 10.3.1.13
+  [djamil@kvm1 ~]$
+```
+
+**une paire de clés SSH a été générée sur l'utilisateur *_oneadmin_* :**
+
+```bash
+ ls -ls .ssh
+```
+
+Résultat ->
+
+```bash
+  total 28
+  4 -rwxr-x---. 1 oneadmin oneadmin  575 Sep 16 09:27 authorized_keys
+  4 -rwxr-x---. 1 oneadmin oneadmin 1444 Sep 16 09:25 config
+  4 -r--------. 1 oneadmin oneadmin 2610 Sep 16 09:27 id_rsa
+  4 -rwxr-x---. 1 oneadmin oneadmin  575 Sep 16 09:27 id_rsa.pub
+  8 -rw-------. 1 oneadmin oneadmin 4125 Sep 16 16:20 known_hosts
+  4 -rw-r--r--. 1 oneadmin oneadmin   91 Sep 16 14:24 known_hosts.old
+```
+
+**Dépot de la clé publique sur les noeuds KVM (dans le dossier .ssh/):**
+
+```bash
+  scp .ssh/id_rsa oneadmin@10.3.1.11:/tmp
+  scp .ssh/id_rsa.pub oneadmin@10.3.1.11:/tmp
+  mv /tmp/id_rsa* .ssh/
+```
+
+
+**trust les empreintes des autres serveurs :**
+
+```bash
+  ssh-keyscan 10.3.1.11 10.3.1.10 >> .ssh/known_hosts
+```
