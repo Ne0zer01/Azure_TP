@@ -446,3 +446,67 @@ Résultat ->
 ```bash
   ssh-keyscan 10.3.1.11 10.3.1.10 >> .ssh/known_hosts
 ```
+
+## II.3. Setup réseau
+
+### 🌞 Créer et configurer le bridge Linux :
+
+```bash
+  # création du bridge
+  ip link add name vxlan_bridge type bridge
+
+  # on allume le bridge
+  ip link set dev vxlan_bridge up 
+
+  # on définit une IP sur cette interface bridge
+  ip addr add 10.220.220.201/24 dev vxlan_bridge
+
+  # ajout de l'interface bridge à la zone public de firewalld
+  firewall-cmd --add-interface=vxlan_bridge --zone=public --permanent
+
+  # activation du masquerading NAT dans cette zone
+  firewall-cmd --add-masquerade --permanent
+
+  # on reload le firewall pour que les deux commandes précédentes prennent effet
+  firewall-cmd --reload
+```
+
+**Création du fichier *_setup_vxlan_bridge.sh_* :**
+
+```bash
+  sudo nano /usr/local/bin/setup_vxlan_bridge.sh
+```
+
+**Création du fichier *_vxlan.service_* :**
+
+```bash
+  nano /etc/systemd/system/vxlan.service
+```
+
+**Faire en sorte que le script *_setup_vxlan_bridge.sh_* s'exécute automatiquement au démarrage :**
+
+```bash
+  [Unit]
+  Description=Setup VXLAN interface for ONE
+
+  [Service]
+  Type=oneshot
+  RemainAfterExit=yes
+  ExecStart=/bin/bash /opt/vxlan.sh
+
+  [Install]
+  WantedBy=multi-user.target
+```
+
+**Faire en sorte que le systemd lise le fichier *_vxlan.service_* :**
+
+```bash
+  sudo systemctl daemon-reload
+```
+
+**Manipuler le fichier *_vxlan.service_* avec systemctl :**
+
+```bash
+  sudo systemctl start vxlan
+  sudo systemctl enable vxlan
+```
