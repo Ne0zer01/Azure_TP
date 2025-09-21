@@ -510,3 +510,209 @@ Résultat ->
   sudo systemctl start vxlan
   sudo systemctl enable vxlan
 ```
+
+## IV. Ajout d'un noeud et VXLAN :
+
+## 1. Ajout d'un noeud :
+
+### 🌞 Setup de *_kvm2.one_* + 🌞 Lancer une deuxième VM:
+
+**_IP statique :_**
+
+```bash
+  3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:94:c3:d9 brd ff:ff:ff:ff:ff:ff
+    inet 10.3.1.12/24 brd 10.3.1.255 scope global noprefixroute enp0s8
+       valid_lft forever preferred_lft forever
+    inet6 fe80::fcbe:be60:bdd7:8ee5/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+  4: vxlan_bridge: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UP group default qlen 1000
+    link/ether 32:42:c4:38:78:be brd ff:ff:ff:ff:ff:ff
+    inet 10.220.220.202/24 scope global vxlan_bridge
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f808:1fff:fe17:bb05/64 scope link
+       valid_lft forever preferred_lft forever
+```
+
+### 🌞 Lancer une deuxième VM :
+
+**Ajout es dépôts de OpenNebula :**
+
+```bash
+  sudo nano /etc/yum.repos.d/opennebula.repo
+```
+
+**Ajout des dépôts du serveur MySQL communautaire :**
+
+```bash
+  wget https://dev.mysql.com/get/mysql80-community-release-el9-5.noarch.rpm
+  sudo rpm -ivh mysql80-community-release-el9-5.noarch.rpm
+ ```
+
+ **Ajout des dépôts EPEL :**
+
+ ```bash
+  sudo dnf install -y epel-release
+ ```
+
+ ### 🌞 Installer les libs MySQL :
+
+ ```bash
+  dnf install -y mysql-community-server
+ ```
+
+ ### 🌞 Installer KVM :
+
+ ```bash
+  sudo dnf install -y opennebula-node-kvm
+ ```
+
+ ### 🌞 Dépendances additionnelles :
+
+ ```bash
+  sudo dnf install -y genisoimage
+ ```
+
+ ### 🌞 Démarrer le service *_libvirtd_* :
+
+ ```bash
+  sudo systemctl start libvirtd
+  sudo systemctl enable libvirtd
+ ```
+
+ ### 🌞 Ouverture firewall :
+
+ ```bash
+  sudo firewall-cmd --permanent --add-port=22/tcp
+  sudo firewall-cmd --permanent --add-port=8472/udp
+```
+
+### 🌞 Handle SSH :
+
+```bash
+  [djamil@frontend ~]$ sudo -su oneadmin
+  [sudo] password for djamil:
+  [oneadmin@frontend djamil]$ ssh djamil@10.3.1.12
+  Warning: Permanently added '10.3.1.12' (ED25519) to the list of known hosts.
+  djamil@10.3.1.11''s password:
+  Last login: Tue Sep 16 12:16:54 2025 from 10.3.1.13
+  [djamil@kvm1 ~]$
+```
+
+```bash
+  # création du bridge
+  ip link add name vxlan_bridge type bridge
+
+  # on allume le bridge
+  ip link set dev vxlan_bridge up 
+
+  # on définit une IP sur cette interface bridge
+  ip addr add 10.220.220.201/24 dev vxlan_bridge
+
+  # ajout de l'interface bridge à la zone public de firewalld
+  firewall-cmd --add-interface=vxlan_bridge --zone=public --permanent
+
+  # activation du masquerading NAT dans cette zone
+  firewall-cmd --add-masquerade --permanent
+
+  # on reload le firewall pour que les deux commandes précédentes prennent effet
+  firewall-cmd --reload
+```
+
+**Création du fichier *_setup_vxlan_bridge.sh_* :**
+
+```bash
+  sudo nano /usr/local/bin/setup_vxlan_bridge.sh
+```
+
+**Création du fichier *_vxlan.service_* :**
+
+```bash
+  nano /etc/systemd/system/vxlan.service
+```
+
+**Faire en sorte que le script *_setup_vxlan_bridge.sh_* s'exécute automatiquement au démarrage :**
+
+```bash
+  [Unit]
+  Description=Setup VXLAN interface for ONE
+
+  [Service]
+  Type=oneshot
+  RemainAfterExit=yes
+  ExecStart=/bin/bash /opt/vxlan.sh
+
+  [Install]
+  WantedBy=multi-user.target
+```
+
+**Faire en sorte que le systemd lise le fichier *_vxlan.service_* :**
+
+```bash
+  sudo systemctl daemon-reload
+```
+
+**Manipuler le fichier *_vxlan.service_* avec systemctl :**
+
+```bash
+  sudo systemctl start vxlan
+  sudo systemctl enable vxlan
+```
+
+### 🌞 Les deux VMs doivent pouvoir se ping :
+
+*_KVM1 -> KVM2 :_*
+
+```powershell
+  [root@localhost ~]# ping 10.220.220.11
+  PING 10.220.220.11 (10.220.220.11) 56(84) bytes of data.
+  64 bytes from 10.220.220.11: icmp_seq=1 ttl=64 time=4.33 ms
+  64 bytes from 10.220.220.11: icmp_seq=2 ttl=64 time=0.837 ms
+  64 bytes from 10.220.220.11: icmp_seq=3 ttl=64 time=3.54 ms
+  64 bytes from 10.220.220.11: icmp_seq=4 ttl=64 time=3.49 ms
+  ^C
+  --- 10.220.220.11 ping statistics ---
+  4 packets transmitted, 4 received, 0% packet loss, time 3006ms
+  rtt min/avg/max/mdev = 0.837/3.050/4.334/1.320 ms
+```
+
+*_KVM2 -> KVM1 :_*
+
+```powershell
+  [root@localhost ~]# ping 10.220.220.10
+  PING 10.220.220.10 (10.220.220.10) 56(84) bytes of data.
+  64 bytes from 10.220.220.10: icmp_seq=1 ttl=64 time=3.96 ms
+  64 bytes from 10.220.220.10: icmp_seq=2 ttl=64 time=1.93 ms
+  64 bytes from 10.220.220.10: icmp_seq=3 ttl=64 time=0.930 ms
+  64 bytes from 10.220.220.10: icmp_seq=4 ttl=64 time=0.942 ms
+  ^C
+  --- 10.220.220.10 ping statistics ---
+  4 packets transmitted, 4 received, 0% packet loss, time 3032ms
+  rtt min/avg/max/mdev = 0.930/1.939/3.956/1.232 ms
+```
+
+
+
+### 🌞 Téléchargez tcpdump sur l'un des noeuds KVM :
+
+```powershell
+  [djamil@kvm1 shared]$ tcpdump --version
+  tcpdump version 4.99.0
+  libpcap version 1.10.0 (with TPACKET_V3)
+  OpenSSL 3.2.2 4 Jun 2024
+```
+
+**_effectuez deux captures, pendant que les VMs sont en train de se ping :_**
+
+*_une qui capture le trafic de l'interface réelle et une autre qui capture le trafic de l'interface bridge VXLAN :_*
+
+```powershell
+  [djamil@kvm1 ~]$ cp capture_* /home/djamil/shared
+  [djamil@kvm1 ~]$ cd shared
+  [djamil@kvm1 shared]$ ls -la
+  total 44
+  drwxrwxrwx. 1 root   root       0 Sep 21 15:52 .
+  drwx------. 4 djamil djamil  4096 Sep 21 15:35 ..
+  -rwxrwxrwx. 1 root   root   14530 Sep 21 15:52 capture_enp0s8.pcap
+  -rwxrwxrwx. 1 root   root   22996 Sep 21 15:52 capture_vxlan.pcap
+```
